@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - $HOME/ds_2019_03_pw_pgdata:/var/lib/postgresql/data
+    environment:
+        POSTGRES_USER: jovyan
+
+  backend:
+    build: .
+    volumes:
+        - ./main.ipynb:/home/jovyan/app/main.ipynb
+        - ./data:/home/jovyan/app/data
+        - ./share:/home/jovyan/app/share
+    expose:
+      - "10000"
+    ports:
+      - "10000:8888"
+    depends_on:
+      - db
+    environment:
+        DSN: 'postgresql://db:5432/postgres'
